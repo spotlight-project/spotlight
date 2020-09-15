@@ -11,7 +11,9 @@ function paths(u, sidx, i0, i1) {
 
 	const stroke = new Path2D();
 
-	const x_width = Math.abs((u.valToPos(xdata[0], scaleX, true) - u.valToPos(xdata[1], scaleX, true)) / 2);
+  let step = 1; // 1 second, hard code for now, but we can make this dynamic in the future
+
+  const x_width = Math.abs((u.valToPos(step, scaleX, true) - u.valToPos(2 * step, scaleX, true)) / 2);
 
 	stroke.moveTo(
 		Math.round(u.valToPos(xdata[0], scaleX, true)),
@@ -24,10 +26,11 @@ function paths(u, sidx, i0, i1) {
 		let x1 = Math.round(u.valToPos(xdata[i + 1], scaleX, true));
 		let y1 = Math.round(u.valToPos(ydata[i + 1], scaleY, true));
 
-		stroke.lineTo(x0 - x_width, y0);
-		stroke.lineTo(x1 - x_width, y0);
+    stroke.lineTo(x0 - x_width, y0);
+    stroke.lineTo(x1 - x_width, y0);
 
 		if (i == i1 - 1) {
+      // the last bit
 			stroke.lineTo(x1 - x_width, y1);
 			stroke.lineTo(x1, y1);
 		}
@@ -55,14 +58,19 @@ function safe_to_fixed(number, decimals) {
 function create_chart(data, scale) {
 	let rect = { width: window.innerWidth * 0.6, height: 400 };
 
-	let scaler = null;
-	if (scale == "Linear") {
-		scaler = (x) => x && x
-	} else if (scale == "Log10") {
-		scaler = (x) => x && Math.pow(10, x)
-	} else if (scale == "Log2") {
-		scaler = (x) => x && Math.pow(2, x)
-	}
+  let scales = {};
+
+  if (scale == "Log10") {
+    scales = {
+      ms: {
+        distr: 3,
+      },
+      reqs: {
+        distr: 3
+      }
+    }
+  }
+
 	let existing = document.getElementById("chart1");
 	existing && existing.remove();
 
@@ -72,57 +80,64 @@ function create_chart(data, scale) {
 		class: "my-chart",
 		width: rect.width,
 		height: rect.height,
-		labelSize: 10,
+		labelSize: 100,
+		scales: scales,
 		labelFont: "bold 8px Arial",
-		ticks: { show: false },
-		points: { show: false },
 		font: "8px Arial",
+		axes: [
+			{ grid: { show: false }},
+			{
+				scale: "ms",
+				grid: { show: false },
+				values: (u, vals, space) => vals.map((val) => safe_to_fixed(val, 0) + "ms"),
+			},
+			{
+				scale: "reqs",
+				side: 1,
+				values: (u, vals, space) => vals.map((val) => safe_to_fixed(val, 2) + "reqs"),
+				grid: { show: false },
+			},
+		],
 		series: [
 			{ value: '{YYYY}-{MM}-{DD} {HH}:{mm}:{ss}' },
 			{
 				label: "P99",
 				stroke: "rgb(155, 214, 206)",
-				value: (self, rawValue) => safe_to_fixed(scaler(rawValue), 3) + "ms",
+				value: (self, rawValue) => safe_to_fixed(rawValue, 3) + "ms",
 				fill: "rgb(155, 214, 206, 0.5 )",
 				paths: paths,
-				scale: "ms"
+        scale: "ms",
+        points: { show: false },
+        ticks: { show: false }
 			},
 			{
 				label: "P90",
 				stroke: "rgb(79, 169, 184)",
-				value: (self, rawValue) => safe_to_fixed(scaler(rawValue), 3) + "ms",
+				value: (self, rawValue) => safe_to_fixed(rawValue, 3) + "ms",
 				fill: "rgb(79, 169, 184, 0.5)",
 				paths: paths,
-				scale: "ms"
+				scale: "ms",
+        points: { show: false },
+        ticks: { show: false }
 			},
 			{
 				label: "P50",
 				stroke: "rgb(2, 88, 115)",
-				value: (self, rawValue) => safe_to_fixed(scaler(rawValue), 3) + "ms",
+				value: (self, rawValue) => safe_to_fixed(rawValue, 3) + "ms",
 				fill: "rgb(2, 88, 115, 0.5)",
 				paths: paths,
+        points: { show: false },
+        ticks: { show: false },
 				scale: "ms"
 			},
 			{
 				label: "Throughput",
-				ke: "rgb(30, 30, 30)",
-				value: (self, rawValue) => scaler(rawValue) + "rpm",
-				scale: "rpm"
+				stroke: "rgb(30, 30, 30)",
+				value: (self, rawValue) => rawValue + "reqs",
+        points: { show: false },
+        ticks: { show: false },
+				scale: "reqs"
 			}
-		],
-		axes: [
-			{},
-			{
-				scale: "ms",
-				grid: { show: false },
-				values: (u, vals, space) => vals.map((val) => safe_to_fixed(scaler(val), 2) + "ms")
-			},
-			{
-				side: 1,
-				values: (u, vals, space) => vals.map((val) => safe_to_fixed(scaler(val), 2) + "reqs"),
-				scale: "reqs",
-				grid: { show: false },
-			},
 		]
 	};
 

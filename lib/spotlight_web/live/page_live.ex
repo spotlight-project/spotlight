@@ -6,7 +6,7 @@ defmodule SpotlightWeb.PageLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(quantile_data: formatted_time_series("Linear"))
+      |> assign(quantile_data: formatted_time_series())
       |> assign(:pause_action, "Pause")
       |> assign(:refresh_rate, 1000)
       |> assign(:scale, "Linear")
@@ -32,7 +32,7 @@ defmodule SpotlightWeb.PageLive do
 
     socket = assign(socket, :scale, scale_val)
 
-    {:noreply, assign(socket, :quantile_data, formatted_time_series(socket.assigns.scale))}
+    {:noreply, assign(socket, :quantile_data, formatted_time_series())}
   end
 
   @impl true
@@ -41,7 +41,7 @@ defmodule SpotlightWeb.PageLive do
       schedule_tick(socket)
     end
 
-    {:noreply, assign(socket, :quantile_data, formatted_time_series(socket.assigns.scale))}
+    {:noreply, assign(socket, :quantile_data, formatted_time_series())}
   end
 
   defp is_paused?(socket) do
@@ -55,13 +55,12 @@ defmodule SpotlightWeb.PageLive do
     Process.send_after(self(), :tick, socket.assigns.refresh_rate)
   end
 
-  defp formatted_time_series("Linear") do
+  defp formatted_time_series() do
     data = Spotlight.RequestTimeCollector.get_merged()
-    keys = Enum.map(data, fn {ts, _} -> ts end)
-    min_ts = Enum.min(keys, fn -> 0 end)
-    max_ts = Enum.max(keys, fn -> 0 end)
 
-    keys = Enum.map(min_ts..max_ts, fn x -> x end)
+    keys =
+      Enum.map(data, fn {ts, _} -> ts end)
+      |> Enum.sort()
 
     [
       keys,
@@ -77,30 +76,6 @@ defmodule SpotlightWeb.PageLive do
       Enum.map(keys, fn ts ->
         Map.get(data, ts, SimpleDog.new()) |> SimpleDog.count() |> ceil()
       end)
-    ]
-  end
-
-  defp formatted_time_series("Log2") do
-    [keys, p99s, p90s, p50s, counts] = formatted_time_series("Linear")
-
-    [
-      keys,
-      Enum.map(p99s, &safe_log2/1),
-      Enum.map(p90s, &safe_log2/1),
-      Enum.map(p50s, &safe_log2/1),
-      Enum.map(counts, &safe_log2/1)
-    ]
-  end
-
-  defp formatted_time_series("Log10") do
-    [keys, p99s, p90s, p50s, counts] = formatted_time_series("Linear")
-
-    [
-      keys,
-      Enum.map(p99s, &safe_log10/1),
-      Enum.map(p90s, &safe_log10/1),
-      Enum.map(p50s, &safe_log10/1),
-      Enum.map(counts, &safe_log10/1)
     ]
   end
 
