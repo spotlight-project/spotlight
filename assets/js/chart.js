@@ -51,10 +51,6 @@ function paths(u, sidx, i0, i1) {
 	};
 }
 
-function safe_to_precision(number, decimals) {
-	return number && number.toPrecision(decimals)
-}
-
 function format_time(time_ms) {
   if (time_ms < 1) {
     return (time_ms * 1000).toPrecision(3) + " µs"
@@ -62,6 +58,16 @@ function format_time(time_ms) {
     return time_ms.toPrecision(3) + " ms"
   } else {
     return (time_ms / 1000).toPrecision(3) + " s"
+  }
+}
+
+function format_requests(requests) {
+  if (requests < 1000) {
+    return requests + " reqs"
+  } else if (requests < 1000000) {
+    return requests / 1000 + "k reqs"
+  } else {
+    return requests / 1000000 + "M reqs"
   }
 }
 
@@ -106,7 +112,7 @@ function create_chart(data, scale) {
 			{
 				scale: "reqs",
 				side: 1,
-				values: (u, vals, space) => vals.map((val) => safe_to_precision(val, 2) + " reqs"),
+        values: (u, vals, space) => vals.map((val) => format_requests(val)),
 				grid: { show: false },
         size: 100
 			},
@@ -146,7 +152,7 @@ function create_chart(data, scale) {
 			{
 				label: "Throughput",
 				stroke: "rgb(30, 30, 30)",
-				value: (self, rawValue) => rawValue + "reqs",
+				value: (self, rawValue) => format_requests(rawValue),
         points: { show: false },
         ticks: { show: false },
 				scale: "reqs"
