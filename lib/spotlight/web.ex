@@ -54,9 +54,6 @@ defmodule Spotlight.Web do
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
-
-      import SpotlightWeb.ErrorHelpers
-      import SpotlightWeb.Gettext
     end
   end
 
