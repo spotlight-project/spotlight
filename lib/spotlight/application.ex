@@ -11,8 +11,6 @@ defmodule Spotlight.Application do
       SpotlightWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Spotlight.PubSub},
-      # Start the Endpoint (http/https)
-      SpotlightWeb.Endpoint,
       Spotlight.RequestTimeCollector
       # Start a worker by calling: Spotlight.Worker.start_link(arg)
       # {Spotlight.Worker, arg}
@@ -22,12 +20,5 @@ defmodule Spotlight.Application do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Spotlight.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  # Tell Phoenix to update the endpoint configuration
-  # whenever the application is updated.
-  def config_change(changed, _new, removed) do
-    SpotlightWeb.Endpoint.config_change(changed, removed)
-    :ok
   end
 end
