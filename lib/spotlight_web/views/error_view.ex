@@ -1,5 +1,5 @@
 defmodule SpotlightWeb.ErrorView do
-  use SpotlightWeb, :view
+  use Spotlight.Web, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

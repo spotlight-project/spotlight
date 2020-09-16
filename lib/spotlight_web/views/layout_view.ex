@@ -1,5 +1,5 @@
 defmodule SpotlightWeb.LayoutView do
-  use SpotlightWeb, :view
+  use Spotlight.Web, :view
   @app_js_path Path.join(__DIR__, "../../../priv/static/js/app.js")
   @app_css_path Path.join(__DIR__, "../../../priv/static/css/app.css")
 
