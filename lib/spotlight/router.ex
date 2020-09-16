@@ -3,7 +3,7 @@ defmodule Spotlight.Router do
     quote bind_quoted: binding() do
       scope path, alias: false, as: false do
         import Phoenix.LiveView.Router, only: [live: 4]
-        live "/", SpotlightWeb.PageLive, :index, opts
+        live "/", Spotlight.PageLive, :index, layout: {Spotlight.LayoutView, :spotlight}
       end
     end
   end

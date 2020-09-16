@@ -1,7 +1,7 @@
-defmodule SpotlightWeb.LayoutView do
+defmodule Spotlight.LayoutView do
   use Spotlight.Web, :view
-  @app_js_path Path.join(__DIR__, "../../../priv/static/js/app.js")
-  @app_css_path Path.join(__DIR__, "../../../priv/static/css/app.css")
+  @app_js_path Path.join(__DIR__, "../../priv/static/js/app.js")
+  @app_css_path Path.join(__DIR__, "../../priv/static/css/app.css")
 
   if Mix.env() == :dev do
     def render("app.js", _), do: File.read!(@app_js_path)

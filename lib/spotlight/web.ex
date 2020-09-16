@@ -20,8 +20,8 @@ defmodule Spotlight.Web do
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/spotlight_web/templates",
-        namespace: SpotlightWeb
+        root: "lib/spotlight/templates",
+        namespace: Spotlight
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
@@ -30,8 +30,7 @@ defmodule Spotlight.Web do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {SpotlightWeb.LayoutView, "live.html"}
+      use Phoenix.LiveView
 
       unquote(view_helpers())
     end

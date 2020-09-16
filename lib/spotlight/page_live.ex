@@ -1,4 +1,4 @@
-defmodule SpotlightWeb.PageLive do
+defmodule Spotlight.PageLive do
   use Spotlight.Web, :live_view
   alias DogSketch.SimpleDog
 
