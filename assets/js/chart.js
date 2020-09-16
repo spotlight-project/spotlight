@@ -51,8 +51,18 @@ function paths(u, sidx, i0, i1) {
 	};
 }
 
-function safe_to_fixed(number, decimals) {
-	return number && number.toFixed(decimals)
+function safe_to_precision(number, decimals) {
+	return number && number.toPrecision(decimals)
+}
+
+function format_time(time_ms) {
+  if (time_ms < 1) {
+    return (time_ms * 1000).toPrecision(3) + " µs"
+  } else if (time_ms < 1000) {
+    return time_ms.toPrecision(3) + " ms"
+  } else {
+    return (time_ms / 1000).toPrecision(3) + " s"
+  }
 }
 
 function create_chart(data, scale) {
@@ -89,13 +99,16 @@ function create_chart(data, scale) {
 			{
 				scale: "ms",
 				grid: { show: false },
-				values: (u, vals, space) => vals.map((val) => safe_to_fixed(val, 0) + "ms"),
+        values: (u, vals, space) => vals.map((val) => format_time(val)
+        ),
+        size: 80
 			},
 			{
 				scale: "reqs",
 				side: 1,
-				values: (u, vals, space) => vals.map((val) => safe_to_fixed(val, 2) + "reqs"),
+				values: (u, vals, space) => vals.map((val) => safe_to_precision(val, 2) + " reqs"),
 				grid: { show: false },
+        size: 100
 			},
 		],
 		series: [
@@ -103,7 +116,7 @@ function create_chart(data, scale) {
 			{
 				label: "P99",
 				stroke: "rgb(155, 214, 206)",
-				value: (self, rawValue) => safe_to_fixed(rawValue, 3) + "ms",
+				value: (self, rawValue) => format_time(rawValue),
 				fill: "rgb(155, 214, 206, 0.5 )",
 				paths: paths,
         scale: "ms",
@@ -113,7 +126,7 @@ function create_chart(data, scale) {
 			{
 				label: "P90",
 				stroke: "rgb(79, 169, 184)",
-				value: (self, rawValue) => safe_to_fixed(rawValue, 3) + "ms",
+				value: (self, rawValue) => format_time(rawValue),
 				fill: "rgb(79, 169, 184, 0.5)",
 				paths: paths,
 				scale: "ms",
@@ -123,7 +136,7 @@ function create_chart(data, scale) {
 			{
 				label: "P50",
 				stroke: "rgb(2, 88, 115)",
-				value: (self, rawValue) => safe_to_fixed(rawValue, 3) + "ms",
+				value: (self, rawValue) => format_time(rawValue),
 				fill: "rgb(2, 88, 115, 0.5)",
 				paths: paths,
         points: { show: false },
