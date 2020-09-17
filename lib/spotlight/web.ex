@@ -1,4 +1,4 @@
-defmodule SpotlightWeb do
+defmodule Spotlight.Web do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
@@ -17,25 +17,11 @@ defmodule SpotlightWeb do
   and import those modules here.
   """
 
-  def controller do
-    quote do
-      use Phoenix.Controller, namespace: SpotlightWeb
-
-      import Plug.Conn
-      import SpotlightWeb.Gettext
-      alias SpotlightWeb.Router.Helpers, as: Routes
-    end
-  end
-
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/spotlight_web/templates",
-        namespace: SpotlightWeb
-
-      # Import convenience functions from controllers
-      import Phoenix.Controller,
-        only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
+        root: "lib/spotlight/templates",
+        namespace: Spotlight
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
@@ -44,8 +30,7 @@ defmodule SpotlightWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {SpotlightWeb.LayoutView, "live.html"}
+      use Phoenix.LiveView
 
       unquote(view_helpers())
     end
@@ -59,23 +44,6 @@ defmodule SpotlightWeb do
     end
   end
 
-  def router do
-    quote do
-      use Phoenix.Router
-
-      import Plug.Conn
-      import Phoenix.Controller
-      import Phoenix.LiveView.Router
-    end
-  end
-
-  def channel do
-    quote do
-      use Phoenix.Channel
-      import SpotlightWeb.Gettext
-    end
-  end
-
   defp view_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
@@ -86,10 +54,6 @@ defmodule SpotlightWeb do
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
-
-      import SpotlightWeb.ErrorHelpers
-      import SpotlightWeb.Gettext
-      alias SpotlightWeb.Router.Helpers, as: Routes
     end
   end
 
