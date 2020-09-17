@@ -2,7 +2,7 @@
 Logger.configure(level: :debug)
 
 # Configures the endpoint
-Application.put_env(:phoenix_live_dashboard, DemoWeb.Endpoint,
+Application.put_env(:spotlight, DemoWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "Hu4qQN3iKzTV4fJxhorPQlA/osH9fAMtbtjVS58PFgfw3ja5Z18Q/WSNR9wP4OfW",
   live_view: [signing_salt: "hMegieSe"],
@@ -22,8 +22,8 @@ Application.put_env(:phoenix_live_dashboard, DemoWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"lib/phoenix/live_dashboard/(live|views)/.*(ex)$",
-      ~r"lib/phoenix/live_dashboard/templates/.*(ex)$"
+      ~r"lib/spotlight/(live|views)/.*(ex)$",
+      ~r"lib/spotlight/templates/.*(ex)$"
     ]
   ]
 )
@@ -35,8 +35,8 @@ defmodule DemoWeb.PageController do
 
   def call(conn, :index) do
     content(conn, """
-    <h2>Phoenix LiveDashboard Dev</h2>
-    <a href="/dashboard" target="_blank">Open Dashboard</a>
+    <h2>Spotlight Dev</h2>
+    <a href="/spotlight" target="_blank">Open Dashboard</a>
     """)
   end
 
@@ -71,7 +71,7 @@ defmodule DemoWeb.Router do
 end
 
 defmodule DemoWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :phoenix_live_dashboard
+  use Phoenix.Endpoint, otp_app: :spotlight
 
   socket "/live", Phoenix.LiveView.Socket
   socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
