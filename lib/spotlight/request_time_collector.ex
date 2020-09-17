@@ -20,6 +20,7 @@ defmodule Spotlight.RequestTimeCollector do
     max_error = Keyword.get(config, :max_error, @max_error)
 
     :telemetry.attach(__MODULE__, [:phoenix, :endpoint, :stop], &handle_metrics/4, nil)
+
     {:ok, %{keys: [], value_map: %{}, seconds_to_keep: seconds_to_keep, max_error: max_error}}
   end
 
