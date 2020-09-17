@@ -60,3 +60,7 @@ end
 ```
 
 We heavily recommend that you put Spotlight behind some kind of authentication before adding it to your production servers.
+
+# Developing on Spotlight
+
+`iex -S mix run dev.exs` - this will run Spotlight locally
