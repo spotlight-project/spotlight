@@ -52,17 +52,21 @@ function paths(u, sidx, i0, i1) {
 }
 
 function format_time(time_ms) {
-  if (time_ms < 1) {
-    return (time_ms * 1000).toPrecision(3) + " µs"
+  if (time_ms === null) {
+    return "";
+  } else if (time_ms < 1) {
+    return (time_ms * 1000).toPrecision(3) + " µs";
   } else if (time_ms < 1000) {
-    return time_ms.toPrecision(3) + " ms"
+    return time_ms.toPrecision(3) + " ms";
   } else {
-    return (time_ms / 1000).toPrecision(3) + " s"
+    return (time_ms / 1000).toPrecision(3) + " s";
   }
 }
 
 function format_requests(requests) {
-  if (requests < 1000) {
+  if (requests === null) {
+    return "";
+  } else if (requests < 1000) {
     return requests + " reqs"
   } else if (requests < 1000000) {
     return requests / 1000 + "k reqs"
@@ -104,17 +108,16 @@ function create_chart(data, scale) {
 			{ grid: { show: false }},
 			{
 				scale: "ms",
-				grid: { show: false },
-        values: (u, vals, space) => vals.map((val) => format_time(val)
-        ),
-        size: 80
+				// grid: { show: false },
+        values: (u, vals, space) => vals.map((val) => format_time(val)),
+        size: 80,
 			},
 			{
 				scale: "reqs",
 				side: 1,
         values: (u, vals, space) => vals.map((val) => format_requests(val)),
 				grid: { show: false },
-        size: 100
+        size: 100,
 			},
 		],
 		series: [
