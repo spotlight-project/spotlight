@@ -14,9 +14,13 @@ defmodule Spotlight.Application do
          name: :web_request_duration,
          metric: [:phoenix, :endpoint, :stop],
          measurement: :duration
+       ]},
+      {Spotlight.TelemetryPercentileCollector,
+       [
+         name: :fake_ecto_query_duration,
+         metric: [:ecto, :query, :complete],
+         measurement: :duration
        ]}
-      # Start a worker by calling: Spotlight.Worker.start_link(arg)
-      # {Spotlight.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

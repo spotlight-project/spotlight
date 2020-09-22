@@ -1,7 +1,5 @@
 import uPlot from 'uplot'
 
-let chart = null;
-
 function paths(u, sidx, i0, i1) {
 	const s = u.series[sidx];
 	const xdata = u.data[0];
@@ -75,7 +73,7 @@ function format_requests(requests) {
   }
 }
 
-function create_chart(data, scale) {
+function create_chart(element, title, chart_id, data, scale) {
 	let rect = { width: window.innerWidth * 0.6, height: 400 };
 
   let scales = {};
@@ -91,12 +89,12 @@ function create_chart(data, scale) {
     }
   }
 
-	let existing = document.getElementById("chart1");
+	let existing = document.getElementById(chart_id);
 	existing && existing.remove();
 
 	let opts = {
-		title: "Web Request Response Time [ms]",
-		id: "chart1",
+		title: title,
+		id: chart_id,
 		class: "my-chart",
 		width: rect.width,
 		height: rect.height,
@@ -163,22 +161,24 @@ function create_chart(data, scale) {
 		]
 	};
 
-	chart = new uPlot(opts, data, document.getElementById("chart"));
+  return new uPlot(opts, data, element)
 }
-
-let scale = "";
 
 export const ChartData = {
 	mounted() {
-		scale = JSON.parse(this.el.dataset.scale);
+		let scale = JSON.parse(this.el.dataset.scale);
+    this.old_scale = scale;
 		let quantile_data = JSON.parse(this.el.dataset.quantile);
-		create_chart(quantile_data, scale);
+    let title = JSON.parse(this.el.dataset.title);
+    let chart_id = "chart_" + this.el.id;
+		this.chart = create_chart(this.el, title, chart_id, quantile_data, scale);
+    this.id = this.el.id;
 	},
 	updated() {
-		let new_scale = JSON.parse(this.el.dataset.scale);
-		if (scale == new_scale) {
+		let scale = JSON.parse(this.el.dataset.scale);
+		if (this.old_scale == scale) {
 			let quantile_data = JSON.parse(this.el.dataset.quantile);
-			chart.setData(quantile_data, scale);
+			this.chart.setData(quantile_data, scale);
 		} else {
 			this.mounted();
 		}

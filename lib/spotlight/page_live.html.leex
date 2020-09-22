@@ -9,5 +9,6 @@
       <option value="Paused">Paused</option>
     </select>
   </form>
-  <%= live_component @socket, Spotlight.Components.PercentileGraph, id: :web_request_duration, tick: @tick %>
+  <%= live_component @socket, Spotlight.Components.PercentileGraph, title: "Web Request Response Time", id: :web_request_duration, tick: @tick %>
+  <%= live_component @socket, Spotlight.Components.PercentileGraph, title: "Fake Ecto Query Duration", id: :fake_ecto_query_duration, tick: @tick %>
 </div>

@@ -45,12 +45,17 @@ defmodule Spotlight.TelemetryPercentileCollector do
     seconds_to_keep = Keyword.get(opts, :seconds_to_keep, @default_seconds_to_keep)
     max_error = Keyword.get(opts, :max_error, @default_max_error)
 
-    :telemetry.attach(__MODULE__, metric, &__MODULE__.handle_metrics/4, {measurement, self()})
+    :telemetry.attach(
+      "#{__MODULE__}.#{Enum.join(metric, "-")}",
+      metric,
+      &__MODULE__.handle_metrics/4,
+      {measurement, self()}
+    )
 
     {:ok, %{keys: [], value_map: %{}, seconds_to_keep: seconds_to_keep, max_error: max_error}}
   end
 
-  def handle_metrics(_metric, measurements, _metadata, {measurement, pid}) do
+  def handle_metrics(metric, measurements, _metadata, {measurement, pid}) do
     send(
       pid,
       {

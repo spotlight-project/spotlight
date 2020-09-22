@@ -13,6 +13,7 @@ defmodule Spotlight.Components.PercentileGraph do
       socket
       |> assign(:id, assigns.id)
       |> assign(:quantile_data, formatted_time_series(assigns.id))
+      |> assign(:title, assigns.title)
 
     {:ok, socket}
   end
@@ -28,7 +29,7 @@ defmodule Spotlight.Components.PercentileGraph do
           </select>
         </form>
       </div>
-      <div id="chart" class="chart" data-quantile="<%= Jason.encode!(@quantile_data) %>" data-scale="<%= Jason.encode!(@scale) %>" phx-hook="ChartData" phx-update="ignore"></div>
+      <div id="<%= assigns.id %>" class="chart" data-title="<%= Jason.encode!(@title) %>" data-quantile="<%= Jason.encode!(@quantile_data) %>" data-scale="<%= Jason.encode!(@scale) %>" phx-hook="ChartData" phx-update="ignore"></div>
     </div>
     """
   end

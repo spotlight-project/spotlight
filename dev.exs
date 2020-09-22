@@ -50,9 +50,20 @@ defmodule DemoWeb.PageController do
       Map.get(conn.params, "max_delay_ms", "1000")
       |> Integer.parse()
 
-    delay = :rand.uniform(max_delay_ms)
-    Process.sleep(delay)
-    content(conn, "<p>Delay: #{delay}ms!")
+    max_delay_ms = (max_delay_ms / 2) |> trunc()
+
+    fake_ecto_duration = :rand.uniform(max_delay_ms) |> max(1)
+
+    delay = :rand.uniform(max_delay_ms) |> max(1)
+
+    :telemetry.execute(
+      [:ecto, :query, :complete],
+      %{duration: System.convert_time_unit(fake_ecto_duration, :millisecond, :native)},
+      %{}
+    )
+
+    Process.sleep(fake_ecto_duration + delay)
+    content(conn, "<p>Delay: #{fake_ecto_duration + delay}ms!")
   end
 
   defp content(conn, content) do
