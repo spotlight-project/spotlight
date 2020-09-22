@@ -45,6 +45,16 @@ defmodule DemoWeb.PageController do
     content(conn, "<p>Hello, #{name}!</p>")
   end
 
+  def call(conn, :random_delay) do
+    {max_delay_ms, _} =
+      Map.get(conn.params, "max_delay_ms", "1000")
+      |> Integer.parse()
+
+    delay = :rand.uniform(max_delay_ms)
+    Process.sleep(delay)
+    content(conn, "<p>Delay: #{delay}ms!")
+  end
+
   defp content(conn, content) do
     conn
     |> put_resp_header("content-type", "text/html")
@@ -65,6 +75,7 @@ defmodule DemoWeb.Router do
     get "/", DemoWeb.PageController, :index
     get "/hello", DemoWeb.PageController, :hello
     get "/hello/:name", DemoWeb.PageController, :hello
+    get "/random_delay/:max_delay_ms", DemoWeb.PageController, :random_delay
 
     spotlight("/spotlight")
   end

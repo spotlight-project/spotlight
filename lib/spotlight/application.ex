@@ -9,7 +9,12 @@ defmodule Spotlight.Application do
     children = [
       # Start the PubSub system
       {Phoenix.PubSub, name: Spotlight.PubSub},
-      Spotlight.RequestTimeCollector
+      {Spotlight.TelemetryPercentileCollector,
+       [
+         name: :web_request_duration,
+         metric: [:phoenix, :endpoint, :stop],
+         measurement: :duration
+       ]}
       # Start a worker by calling: Spotlight.Worker.start_link(arg)
       # {Spotlight.Worker, arg}
     ]
